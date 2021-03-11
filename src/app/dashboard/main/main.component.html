@@ -8,75 +8,73 @@
                 <!-- Page Heading -->
                 <div class="d-sm-flex align-items-center justify-content-between mb-4">
                     <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
-                    <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
-                            class="fas fa-download fa-sm text-white-50"></i> Generate Report</a>
                 </div>
 
                 <!-- Content Row -->
                 <div class="row">
 
-                    <!-- Active Cases -->
+                    <!-- Confirmed Cases -->
                     <div class="col-xl-3 col-md-6 mb-4">
                         <div class="card border-left-warning shadow h-100 py-2">
                             <div class="card-body">
                                 <div class="row no-gutters align-items-center">
                                     <div class="col mr-2">
                                         <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                                            Active Cases</div>
-                                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{stateDetail.activeCases}}
+                                            Confirmed</div>
+                                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{totalConfirmed()}}
                                         </div>
                                     </div>
                                     <div class="col-auto">
-                                        <i class="fas fa-calendar fa-2x text-gray-300"></i>
+                                        <i class="fas fa-calendar-check fa-2x text-gray-300"></i>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Cured Cases -->
+                    <!-- Active Cases -->
                     <div class="col-xl-3 col-md-6 mb-4">
-                        <div class="card border-left-success shadow h-100 py-2">
+                        <div class="card border-left-primary shadow h-100 py-2">
                             <div class="card-body">
                                 <div class="row no-gutters align-items-center">
                                     <div class="col mr-2">
-                                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                            Cured Cases</div>
-                                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{stateDetail.curedCases}}
+                                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                            Active</div>
+                                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{totalActive()}}
                                         </div>
                                     </div>
                                     <div class="col-auto">
-                                        <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
+                                        <i class="fas fa-hospital fa-2x text-gray-300"></i>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Vaccinated -->
+                    <!-- Recovered -->
                     <div class="col-xl-3 col-md-6 mb-4">
                         <div class="card border-left-info shadow h-100 py-2">
                             <div class="card-body">
                                 <div class="row no-gutters align-items-center">
                                     <div class="col mr-2">
-                                        <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Vaccinated
+                                        <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Recovered
                                         </div>
                                         <div class="row no-gutters align-items-center">
                                             <div class="col-auto">
                                                 <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">
-                                                    {{stateDetail.vaccinated}}</div>
+                                                    {{totalRecovered()}}</div>
                                             </div>
                                             <div class="col">
                                                 <div class="progress progress-sm mr-2">
                                                     <div class="progress-bar bg-info" role="progressbar"
-                                                        style="width: 50%" aria-valuenow="50" aria-valuemin="0"
+                                                        style="width: 90%" aria-valuenow="90" aria-valuemin="0"
                                                         aria-valuemax="100"></div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="col-auto">
-                                        <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
+                                        <i class="fas fa-hand-holding-medical fa-2x text-gray-300"></i>
                                     </div>
                                 </div>
                             </div>
@@ -91,10 +89,10 @@
                                     <div class="col mr-2">
                                         <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
                                             Deaths</div>
-                                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{stateDetail.deaths}}</div>
+                                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{totalDeaths()}}</div>
                                     </div>
                                     <div class="col-auto">
-                                        <i class="fas fa-comments fa-2x text-gray-300"></i>
+                                        <i class="fas fa-skull-crossbones fa-2x text-gray-300"></i>
                                     </div>
                                 </div>
                             </div>
@@ -118,28 +116,29 @@
                                         <thead>
                                             <tr>
                                                 <td colspan="7" style="text-align: end;">
-                                                    <input type="text" placeholder="Search by state">
+                                                    <input type="text" placeholder="Search by state"
+                                                        (input)="st=ip.value" #ip>
                                                 </td>
                                             </tr>
                                             <tr>
                                                 <th>Sr</th>
                                                 <th>State</th>
+                                                <th>Confirmed</th>
                                                 <th>Active</th>
-                                                <th>Cured</th>
-                                                <th>Vaccinated</th>
+                                                <th>Recovered</th>
                                                 <th>Deaths</th>
-                                                <th>Health</th>
+                                                <th>Last Update</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr *ngFor="let stDt of stateDetails; let sr = index;">
+                                            <tr *ngFor="let dt of (details | flSt:st); let sr = index;">
                                                 <td>{{sr+1}}</td>
-                                                <td>{{stDt.name}}</td>
-                                                <td>{{stDt.activeCases}}</td>
-                                                <td>{{stDt.curedCases}}</td>
-                                                <td>{{stDt.vaccinated}}</td>
-                                                <td>{{stDt.deaths}}</td>
-                                                <td>{{stDt.stateHealth}}</td>
+                                                <td>{{dt.Province_State}}</td>
+                                                <td>{{dt.Confirmed}}</td>
+                                                <td>{{dt.Active}}</td>
+                                                <td>{{dt.Recovered}}</td>
+                                                <td>{{dt.Deaths}}</td>
+                                                <td>{{dt.Last_Update.toISOString().split('T')[0]}}</td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -156,14 +155,15 @@
                         <!-- Project Card Example -->
                         <div class="card shadow mb-4">
                             <div class="card-header py-3">
-                                <h6 class="m-0 font-weight-bold text-primary">Important Contacts</h6>
+                                <h6 class="m-0 font-weight-bold text-primary">Important Notes</h6>
                             </div>
                             <div class="card-body">
-                                <p>SB Admin 2 makes extensive use of Bootstrap 4 utility classes in order to reduce
-                                    CSS bloat and poor page performance. Custom CSS classes are used to create
-                                    custom components and custom utility classes.</p>
-                                <p class="mb-0">Before working with this theme, you should become familiar with the
-                                    Bootstrap framework, especially the utility classes.</p>
+                                <p>Coronavirus disease (COVID-19) is an infectious disease caused by a newly discovered
+                                    coronavirus.Most people who fall sick with COVID-19 will experience mild to moderate
+                                    symptoms and recover without special treatment.</p>
+                                <p class="mb-0">You can be infected by breathing in the virus if you are within close
+                                    proximity of someone who has COVID-19, or by touching a contaminated surface and
+                                    then your eyes, nose or mouth.</p>
                             </div>
                         </div>
                     </div>
@@ -174,11 +174,12 @@
                                 <h6 class="m-0 font-weight-bold text-primary">Recent Updates</h6>
                             </div>
                             <div class="card-body">
-                                <p>SB Admin 2 makes extensive use of Bootstrap 4 utility classes in order to reduce
-                                    CSS bloat and poor page performance. Custom CSS classes are used to create
-                                    custom components and custom utility classes.</p>
-                                <p class="mb-0">Before working with this theme, you should become familiar with the
-                                    Bootstrap framework, especially the utility classes.</p>
+                                <p>Today is the 349th day since India implemented a nationwide lockdown to help curb the
+                                    novel coronavirus pandemic. So far, India has recorded 1,12,44,786 confirmed
+                                    COVID-19 cases, including 1,57,930 deaths. A total of 1,08,99,394 people have
+                                    recuperated from COVID-19 so far.</p>
+                                <p class="mb-0">The cumulative number of COVID-19 vaccine doses administered in India
+                                    has crossed 2.26 crore, according to the Union Health Ministry.</p>
                             </div>
                         </div>
                     </div>

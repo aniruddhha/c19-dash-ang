@@ -1,6 +1,6 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { Observable } from "rxjs";
+import { Observable, throwError } from "rxjs";
 import { ResMsg } from "src/app/http/res.domain";
 import { AppUser } from "../domain/app.user";
 import { map, catchError } from 'rxjs/operators';
@@ -17,6 +17,10 @@ export class AuthRestService {
         return this.http.post<ResMsg<AppUser>>(AuthUrls.signUp, appUser)
             .pipe(
                 map(res => res.payload)
+            ).pipe(
+                catchError(
+                    err => throwError("Problem in Sign Up")
+                )
             )
     }
 
@@ -24,6 +28,10 @@ export class AuthRestService {
         return this.http.post<ResMsg<AppUser>>(AuthUrls.signIn, { userName, password })
             .pipe(
                 map(res => res.payload)
+            ).pipe(
+                catchError(
+                    err => throwError("Problem in Sign In")
+                )
             )
     }
 }

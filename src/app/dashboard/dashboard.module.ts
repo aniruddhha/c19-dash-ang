@@ -5,14 +5,23 @@ import { DashboardRoutingModule } from './dashboard.routing.module';
 import { StatsComponent } from './stats/stats.component';
 import { ChartsModule } from 'ng2-charts';
 import { MainComponent } from './main/main.component';
+import { HttpClientModule } from '@angular/common/http';
+import { StateFilter } from './main/state.filter';
 
 @NgModule({
-  declarations: [DashboardComponent, StatsComponent, MainComponent],
+  declarations: [
+    DashboardComponent,
+    StatsComponent,
+    MainComponent,
+
+    StateFilter
+  ],
   imports: [
     CommonModule,
     DashboardRoutingModule,
 
-    ChartsModule
+    ChartsModule,
+    HttpClientModule
   ]
 })
 export class DashboardModule { }

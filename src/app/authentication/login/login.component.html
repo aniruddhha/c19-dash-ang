@@ -19,14 +19,31 @@
                                     <div class="form-group">
                                         <input type="text" class="form-control form-control-user"
                                             aria-describedby="emailHelp" formControlName="userName"
-                                            placeholder="Username">
+                                            placeholder="Username"
+                                            [ngClass]="{ 'border-danger' : signInForm.get('userName')?.touched && signInForm.get('userName')?.invalid }">
                                     </div>
                                     <div class="form-group">
                                         <input type="password" class="form-control form-control-user"
                                             aria-describedby="emailHelp" formControlName="password"
-                                            placeholder="Password">
+                                            placeholder="Password"
+                                            [ngClass]="{ 'border-danger' : signInForm.get('password')?.touched && signInForm.get('password')?.invalid }">
                                     </div>
-                                    <input type="submit" class="btn btn-primary btn-user btn-block" value="Login">
+                                    <div class="form-group" *ngIf="isSuccessFul">
+                                        <p class="text-danger text-center"> Problem in Sign In </p>
+                                    </div>
+                                    <input type="submit" class="btn btn-user btn-block" value="Login"
+                                        [disabled]="signInForm.invalid"
+                                        [ngClass]="{'btn-primary' : signInForm.valid, 'btn-secondary' : signInForm.invalid }">
+                                    <hr>
+                                    <div class="form-group">
+                                        <p class="text-muted text-center"> Protect yourself and others around you by
+                                            knowing the facts and taking appropriate precautions. Follow advice provided
+                                            by your local health authority. </p>
+                                        <p class="text-muted text-center"> Calling in advance allows your healthcare
+                                            provider to quickly direct you to
+                                            the right health facility. This protects you, and prevents the spread of
+                                            viruses and other infections.</p>
+                                    </div>
                                     <hr>
                                 </form>
                                 <div class="text-center">

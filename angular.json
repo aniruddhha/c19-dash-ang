@@ -120,6 +120,10 @@
               "devServerTarget": "c19-dash:serve:production"
             }
           }
+        },
+        "deploy": {
+          "builder": "angular-cli-ghpages:deploy",
+          "options": {}
         }
       }
     }

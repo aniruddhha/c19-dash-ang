@@ -14,29 +14,50 @@
                             <div class="form-group row">
                                 <div class="col-sm-6 mb-3 mb-sm-0">
                                     <input type="text" class="form-control form-control-user" formControlName="userName"
-                                        placeholder="User Name">
+                                        placeholder="User Name"
+                                        [ngClass]="{ 'border-danger' : signUpForm.get('userName')?.touched && signUpForm.get('userName')?.invalid }">
                                 </div>
                                 <div class="col-sm-6">
                                     <input type="email" class="form-control form-control-user" formControlName="email"
-                                        placeholder="Email Address">
+                                        placeholder="Email Address"
+                                        [ngClass]="{ 'border-danger' : signUpForm.get('email')?.touched && signUpForm.get('email')?.invalid }">
                                 </div>
                             </div>
 
                             <div class="form-group row">
                                 <div class="col-sm-6 mb-3 mb-sm-0">
                                     <input type="password" class="form-control form-control-user" placeholder="Password"
-                                        formControlName="password">
+                                        formControlName="password"
+                                        [ngClass]="{ 'border-danger' : signUpForm.get('password')?.touched && signUpForm.get('password')?.invalid }">
                                 </div>
                                 <div class="col-sm-6">
                                     <input type="password" class="form-control form-control-user"
-                                        placeholder="Repeat Password" formControlName="confirmPassword">
+                                        placeholder="Repeat Password" formControlName="confirmPassword"
+                                        [ngClass]="{ 'border-danger' : signUpForm.get('confirmPassword')?.touched && signUpForm.get('confirmPassword')?.invalid }">
                                 </div>
                             </div>
                             <div class="form-group">
                                 <input type="mobile" class="form-control form-control-user" placeholder="Mobile Number"
-                                    formControlName="mobile">
+                                    formControlName="mobile"
+                                    [ngClass]="{ 'border-danger' : signUpForm.get('mobile')?.touched && signUpForm.get('mobile')?.invalid }">
                             </div>
-                            <input type="submit" class="btn btn-primary btn-user btn-block" value="Register Account">
+                            <div class="form-group" *ngIf="isSuccessFul">
+                                <p class="text-danger text-center"> Problem in creating account </p>
+                            </div>
+                            <input type="submit" class="btn btn-user btn-block" value="Register Account"
+                                [disabled]="signUpForm.invalid"
+                                [ngClass]="{'btn-primary' : signUpForm.valid, 'btn-secondary' : signUpForm.invalid }">
+                            <hr>
+                            <div class="form-group">
+                                <p class="text-muted text-center">Masks can help prevent the spread of the virus from
+                                    the person wearing the mask to others. Masks alone do not protect against COVID-19,
+                                    and should be combined with physical distancing and hand hygiene. Follow the advice
+                                    provided by your local health authority. </p>
+
+                                <p class="text-muted text-center">Clean your hands often. Use soap and water, or an
+                                    alcohol-based hand rub.Maintain a safe distance from anyone who is coughing or
+                                    sneezing.Stay home if you feel unwell.</p>
+                            </div>
                             <hr>
                         </form>
                         <div class="text-center">

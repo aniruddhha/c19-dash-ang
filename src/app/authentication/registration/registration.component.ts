@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { AppUser } from '../domain/app.user';
 import { AuthRestService } from '../http/auth.rest.service';
 
@@ -12,18 +13,21 @@ import { AuthRestService } from '../http/auth.rest.service';
 export class RegistrationComponent implements OnInit {
 
   signUpForm: FormGroup
+  isSuccessFul: boolean = false
 
   constructor(
     private authRest: AuthRestService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private router: Router
   ) {
     this.signUpForm = this.fb.group({
-      userName: fb.control(''),
-      email: fb.control(''),
-      password: fb.control(''),
-      confirmPassword: fb.control(''),
-      mobile: fb.control('')
+      userName: fb.control('', Validators.required),
+      email: fb.control('', Validators.compose([Validators.required, Validators.email])),
+      password: fb.control('', Validators.required),
+      confirmPassword: fb.control('', Validators.required),
+      mobile: fb.control('', Validators.required)
     })
+    this.signUpForm.valueChanges.subscribe(val => this.isSuccessFul = false)
   }
 
   ngOnInit(): void {
@@ -32,7 +36,10 @@ export class RegistrationComponent implements OnInit {
   onSignUp() {
     const appUser = this.signUpForm.value as AppUser
     this.authRest.signUp(appUser).subscribe(res => {
-      console.log(res)
+      this.signUpForm.reset()
+      this.router.navigate(['./auth/']);
+    }, err => {
+      this.isSuccessFul = true
     })
   }
 }

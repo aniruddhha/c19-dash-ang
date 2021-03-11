@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { AuthRestService } from '../http/auth.rest.service';
 
 @Component({
@@ -11,15 +12,18 @@ import { AuthRestService } from '../http/auth.rest.service';
 export class LoginComponent implements OnInit {
 
   signInForm: FormGroup
+  isSuccessFul: boolean = false
 
   constructor(
     private fb: FormBuilder,
-    private authRest: AuthRestService
+    private authRest: AuthRestService,
+    private router: Router
   ) {
     this.signInForm = fb.group({
-      userName: fb.control(''),
-      password: fb.control('')
+      userName: fb.control('', Validators.required),
+      password: fb.control('', Validators.required)
     })
+    this.signInForm.valueChanges.subscribe(val => this.isSuccessFul = false)
   }
 
   ngOnInit(): void {
@@ -29,7 +33,11 @@ export class LoginComponent implements OnInit {
     console.log(this.signInForm.value)
     const { userName, password } = this.signInForm.value
     this.authRest.signIn(userName, password).subscribe(
-      res => console.log(res)
+      res => {
+        localStorage.setItem('user', res.userName)
+        this.router.navigate(['./dashboard/main'])
+      },
+      err => this.isSuccessFul = true
     )
   }
 }

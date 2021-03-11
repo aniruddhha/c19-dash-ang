@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ChartDataSets, ChartOptions, ChartType } from 'chart.js';
 import { Color, Label, monkeyPatchChartJsLegend, monkeyPatchChartJsTooltip, SingleDataSet } from 'ng2-charts';
+import { DataSourceService } from '../http/datasource.service';
 
 @Component({
   selector: 'app-stats',
@@ -15,7 +16,7 @@ export class StatsComponent implements OnInit {
     cutoutPercentage: 80
   };
   public pieChartLabels: Label[] = [
-    'Active', 'Cured', 'Vaccinated'
+    'Active', 'Recovered', 'Deaths'
   ];
   public pieChartData: SingleDataSet = [11000, 8000, 2000];
   public pieChartType: ChartType = 'pie';
@@ -54,7 +55,9 @@ export class StatsComponent implements OnInit {
     { data: [1000, 800, 900, 1000, 1500, 1800, 1100, 800, 600, 100, 10, 10, 2, 100], maxBarThickness: 25 }
   ];
 
-  constructor() {
+  constructor(
+    private datasource: DataSourceService
+  ) {
     monkeyPatchChartJsTooltip();
     monkeyPatchChartJsLegend();
   }
