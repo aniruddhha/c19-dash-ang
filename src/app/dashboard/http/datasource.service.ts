@@ -3,7 +3,7 @@ import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
 import { map } from "rxjs/operators";
 import { Urls } from "src/app/http/urls";
-import { StateDetail, Detail } from "../main/state.domain";
+import { Detail } from "../main/state.domain";
 
 @Injectable()
 export class DataSourceService {
@@ -47,28 +47,40 @@ export class DataSourceService {
         }))
     }
 
-    fetchConfirmedCases() {
-        this.http.get(Urls.confirmedTimeSeries, { responseType: 'text' })
-            .subscribe(res => {
-                const lines = res.split('\n');
-                const heads = lines[0].split(',');
-                const indiaLines = lines.filter(ln => ln.includes(',India,'))
-                const indiaValues = indiaLines[0].split(',')
+    fetchConfirmedCases(): Observable<{ [key: string]: number }> {
+        return this.fetchCases(Urls.confirmedTimeSeries)
+    }
 
-                const neededHeads = heads.splice(4, heads.length)
+    fetchDeathsCases(): Observable<{ [key: string]: number }> {
+        return this.fetchCases(Urls.deathsTimeSeries)
+    }
 
-                const neededValues = indiaValues.splice(4, indiaValues.length)
+    fetchRecoveredCases(): Observable<{ [key: string]: number }> {
+        return this.fetchCases(Urls.recoveredTimeSeries)
+    }
 
-                const result: { [key: string]: number } = {}
-                neededHeads.forEach((key, i) => {
-                    const date = new Date(key)
-                    const month = date.toLocaleString('default', { month: 'short' });
-                    const year = date.toLocaleString('default', { year: 'numeric' });
-                    console.log(`${month}${year} -> ${neededValues[i]}`)
+    private fetchCases(url: string): Observable<{ [key: string]: number }> {
+        return this.http.get(url, { responseType: 'text' })
+            .pipe(
+                map(res => {
+                    const result: { [key: string]: number } = {}
+                    const lines = res.split('\n');
+                    const heads = lines[0].split(',');
+                    const indiaLines = lines.filter(ln => ln.includes(',India,'))
+                    const indiaValues = indiaLines[0].split(',')
 
-                    result[`${month}${year}`] = Number.parseInt(neededValues[i])
+                    const neededHeads = heads.splice(4, heads.length)
+                    const neededValues = indiaValues.splice(4, indiaValues.length)
+
+                    neededHeads.forEach((key, i) => {
+                        const date = new Date(key)
+                        const month = date.toLocaleString('default', { month: 'short' });
+                        const year = date.toLocaleString('default', { year: 'numeric' }).substring(2);
+                        result[`${month}${year}`] = Number.parseInt(neededValues[i]) - Number.parseInt(neededValues[Math.max(0, i - 1)])
+                    })
+
+                    return result
                 })
-                // console.log(result)
-            })
+            )
     }
 }

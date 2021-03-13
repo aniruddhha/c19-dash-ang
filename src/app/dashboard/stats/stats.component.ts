@@ -24,9 +24,9 @@ export class StatsComponent implements OnInit {
   public pieChartPlugins = [];
 
   public lineChartData: ChartDataSets[] = [
-    { data: [10000, 8000, 9000, 10000, 15000, 18000, 16000, 11000, 8000, 5000, 800, 10000, 11000, 8000] },
+    { data: [] },
   ];
-  public lineChartLabels: Label[] = ['Mar20', 'Apr20', 'May20', 'Jun20', 'Jul20', 'Aug20', 'Sep20', 'Oct20', 'Nov20', 'Dec20', 'Jan21', 'Feb21', 'Mar21'];
+  public lineChartLabels: Label[] = [];
   public lineChartOptions: ChartOptions = {
     responsive: true,
     maintainAspectRatio: false,
@@ -46,23 +46,57 @@ export class StatsComponent implements OnInit {
     responsive: true,
     maintainAspectRatio: false,
   };
-  public barChartLabels: Label[] = ['Mar20', 'Apr20', 'May20', 'Jun20', 'Jul20', 'Aug20', 'Sep20', 'Oct20', 'Nov20', 'Dec20', 'Jan21', 'Feb21', 'Mar21'];
+  public barChartLabels: Label[] = [];
   public barChartType: ChartType = 'bar';
   public barChartLegend = false;
   public barChartPlugins = [];
 
   public barChartData: ChartDataSets[] = [
-    { data: [1000, 800, 900, 1000, 1500, 1800, 1100, 800, 600, 100, 10, 10, 2, 100], maxBarThickness: 25 }
+    { data: [], maxBarThickness: 25 }
   ];
 
+  totalConfirmed = 0
+  totalRecovered = 0
+  totalDeaths = 0
+
   constructor(
-    private datasource: DataSourceService
+    private dataSource: DataSourceService
   ) {
     monkeyPatchChartJsTooltip();
     monkeyPatchChartJsLegend();
   }
 
   ngOnInit(): void {
-  }
+    this.dataSource.fetchConfirmedCases().subscribe(res => {
+      console.log(res)
+      this.lineChartLabels = Object.keys(res);
+      this.lineChartData[0].data = Object.values(res);
 
+      let total = 0
+      this.lineChartData[0].data.forEach(dt => {
+        total += (dt as number)
+      })
+      this.pieChartData[0] = total
+    })
+
+    this.dataSource.fetchDeathsCases().subscribe(res => {
+      this.barChartLabels = Object.keys(res);
+      this.barChartData[0].data = Object.values(res);
+
+      let total = 0
+      this.barChartData[0].data.forEach(dt => {
+        total += (dt as number)
+      })
+      this.pieChartData[2] = total
+    })
+
+    this.dataSource.fetchRecoveredCases().subscribe(res => {
+
+      let total = 0
+      Object.values(res).forEach(dt => {
+        total += (dt as number)
+      })
+      this.pieChartData[1] = total
+    })
+  }
 }
