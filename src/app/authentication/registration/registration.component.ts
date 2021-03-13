@@ -1,3 +1,4 @@
+import { ThrowStmt } from '@angular/compiler';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -13,7 +14,8 @@ import { AuthRestService } from '../http/auth.rest.service';
 export class RegistrationComponent implements OnInit {
 
   signUpForm: FormGroup
-  isSuccessFul: boolean = false
+  isErr: boolean = false
+  errMsg: string = ''
 
   constructor(
     private authRest: AuthRestService,
@@ -25,9 +27,9 @@ export class RegistrationComponent implements OnInit {
       email: fb.control('', Validators.compose([Validators.required, Validators.email])),
       password: fb.control('', Validators.required),
       confirmPassword: fb.control('', Validators.required),
-      mobile: fb.control('', Validators.required)
+      mobile: fb.control('', Validators.compose([Validators.required, Validators.pattern('^[0-9]{10}$')]))
     })
-    this.signUpForm.valueChanges.subscribe(val => this.isSuccessFul = false)
+    this.signUpForm.valueChanges.subscribe(val => this.isErr = false)
   }
 
   ngOnInit(): void {
@@ -35,11 +37,23 @@ export class RegistrationComponent implements OnInit {
 
   onSignUp() {
     const appUser = this.signUpForm.value as AppUser
-    this.authRest.signUp(appUser).subscribe(res => {
-      this.signUpForm.reset()
-      this.router.navigate(['./auth/']);
-    }, err => {
-      this.isSuccessFul = true
-    })
+
+    if (this.signUpForm.get('confirmPassword')?.value == appUser.password) {
+      this.authRest.signUp(appUser).subscribe(res => {
+        this.signUpForm.reset()
+        this.router.navigate(['./auth/']);
+      }, err => {
+        this.isErr = true
+        this.errMsg = 'problem is signing up'
+      })
+    } else {
+      this.isErr = true
+      this.errMsg = 'password and confirm should be same'
+    }
+  }
+
+  numberOnly(event: KeyboardEvent, size: number): boolean {
+    const charCode = (event.which) ? event.which : event.keyCode;
+    return !(charCode > 31 && (charCode < 48 || charCode > 57)) && (size < 10)
   }
 }

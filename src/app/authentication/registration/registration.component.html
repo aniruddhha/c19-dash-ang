@@ -39,10 +39,11 @@
                             <div class="form-group">
                                 <input type="mobile" class="form-control form-control-user" placeholder="Mobile Number"
                                     formControlName="mobile"
-                                    [ngClass]="{ 'border-danger' : signUpForm.get('mobile')?.touched && signUpForm.get('mobile')?.invalid }">
+                                    [ngClass]="{ 'border-danger' : signUpForm.get('mobile')?.touched && signUpForm.get('mobile')?.invalid }"
+                                    (keypress)="numberOnly($event, mb.value.length)" #mb>
                             </div>
-                            <div class="form-group" *ngIf="isSuccessFul">
-                                <p class="text-danger text-center"> Problem in creating account </p>
+                            <div class="form-group" *ngIf="isErr">
+                                <p class="text-danger text-center"> {{errMsg}} </p>
                             </div>
                             <input type="submit" class="btn btn-user btn-block" value="Register Account"
                                 [disabled]="signUpForm.invalid"
